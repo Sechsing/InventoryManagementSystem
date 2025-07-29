@@ -33,13 +33,13 @@ rl.on("line", async (line) => {
         console.table(products.map(({ id, name, quantity }) => ({ id, name, quantity})));
         rl.prompt();
     } else if (cmd === "update") {
-        rl.question("Enter product name: ", (name) => {
+        rl.question("Enter product id: ", (id) => {
             rl.question("Enter new quantity: ", async (qty) => {
                 const quantity = parseInt(qty);
                 if (isNaN(quantity)) {
                     console.log("Invalid quantity.");
                 } else {
-                    const success = await inventory.updateQuantity(name, quantity);
+                    const success = await inventory.updateQuantity(id, quantity);
                     console.log(success ? "Quantity updated." : "Product not found.");
                 }
                 rl.prompt();
