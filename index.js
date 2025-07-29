@@ -7,37 +7,44 @@ const rl = readline.createInterface({
 });
 
 console.log("Welcome to the Inventory Management System");
-console.log("Commands: add, list, update, exit");
+console.log("Commands: Add, List, Update, Exit");
 
-rl.setPrompt("> ")
+rl.setPrompt("Enter command: ")
 rl.prompt();
 
 rl.on("line", async (line) => {
     const cmd = line.trim();
 
-    if (cmd === "add") {
+    if (cmd === "Add") {
         rl.question("Enter product name: ", (name) => {
             rl.question("Enter quantity: ", async (qty) => {
                 const quantity = parseInt(qty);
-                if (isNaN(quantity)) {
-                    console.log("Invalid quantity.");
+                if (isNaN(quantity) || quantity <= 0) {
+                    console.log("Invalid quantity. Please enter a positive number.");
                 } else {
-                    const product = await inventory.addProduct(name, quantity);
-                    console.log("Added: ", product);
+                    const products = await inventory.getAllProducts();
+                    const exists = products.some(p => p.name.toLowerCase() === name.toLowerCase());
+
+                    if (exists) {
+                        console.log("Product already exists.");
+                    } else {
+                        const product = await inventory.addProduct(name, quantity);
+                        console.log("Added:", product);
+                    }
                 }
                 rl.prompt();
             });
         });
-    } else if (cmd === "list") {
+    } else if (cmd === "List") {
         const products = await inventory.getAllProducts();
         console.table(products.map(({ id, name, quantity }) => ({ id, name, quantity})));
         rl.prompt();
-    } else if (cmd === "update") {
+    } else if (cmd === "Update") {
         rl.question("Enter product id: ", (id) => {
             rl.question("Enter new quantity: ", async (qty) => {
                 const quantity = parseInt(qty);
-                if (isNaN(quantity)) {
-                    console.log("Invalid quantity.");
+                if (isNaN(quantity) || quantity <= 0) {
+                    console.log("Invalid quantity. Please enter a positive number.");
                 } else {
                     const success = await inventory.updateQuantity(id, quantity);
                     console.log(success ? "Quantity updated." : "Product not found.");
@@ -45,10 +52,10 @@ rl.on("line", async (line) => {
                 rl.prompt();
             });
         });
-    } else if (cmd === "exit") {
+    } else if (cmd === "Exit") {
         rl.close();
     } else {
-        console.log("Unknown command.");
+        console.log("Command not found.");
         rl.prompt();
     }
 });

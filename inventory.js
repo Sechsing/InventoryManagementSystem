@@ -1,25 +1,20 @@
 const fs = require("fs/promises");
 const path = "./products.json";
 
-async function loadProducts() {
-    try {
-        const data = await fs.readFile(path, "utf-8");
-        return JSON.parse(data);
-    } catch {
-        return [];
-    }
-}
-
 async function saveProducts(products) {
     await fs.writeFile(path, JSON.stringify(products, null, 2));
 }
 
-function generateId() {
-    return "SKU" + Math.floor(Math.random() * 100000);
+function generateId(products) {
+    let id;
+    do {
+        id = Math.floor(Math.random() * 100000);
+    } while (products.some(p => p.id === id));
+    return id;
 }
 
 async function addProduct(name, quantity) {
-    const products = await loadProducts();
+    const products = await getAllProducts();
     const product = {
         id: generateId(),
         name,
@@ -31,12 +26,17 @@ async function addProduct(name, quantity) {
 }
 
 async function getAllProducts() {
-    return await loadProducts();
+    try {
+        const data = await fs.readFile(path, "utf-8");
+        return JSON.parse(data);
+    } catch {
+        return [];
+    }
 }
 
 async function updateQuantity(id, quantity) {
-    const products = await loadProducts();
-    const product = products.find(p => p.id === id);
+    const products = await getAllProducts();
+    const product = products.find(p => p.id === Number(id));
     if (!product) return false;
     product.quantity = quantity;
     await saveProducts(products);

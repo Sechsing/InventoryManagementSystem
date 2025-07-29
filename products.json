@@ -1,12 +1,17 @@
 [
   {
-    "id": "SKU37292",
+    "id": 37292,
     "name": "Watermelon",
     "quantity": 5
   },
   {
-    "id": "SKU67276",
+    "id": 67276,
     "name": "Toothbrush",
+    "quantity": 7
+  },
+  {
+    "id": 69788,
+    "name": "Kid",
     "quantity": 5
   }
 ]
