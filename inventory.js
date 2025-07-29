@@ -10,7 +10,7 @@ async function loadProducts() {
     }
 }
 
-async function saveProducts() {
+async function saveProducts(products) {
     await fs.writeFile(path, JSON.stringify(products, null, 2));
 }
 
@@ -30,21 +30,21 @@ async function addProduct(name, quantity) {
     return product
 }
 
-async function getAllproducts() {
+async function getAllProducts() {
     return await loadProducts();
 }
 
-async function updateQuantity(id, quantity) {
+async function updateQuantity(name, quantity) {
     const products = await loadProducts();
-    const product = products.find(p => p.id === id);
+    const product = products.find(p => p.name === name);
     if (!product) return false;
     product.quantity = quantity;
     await saveProducts(products);
-    return True
+    return true;
 }
 
 module.exports = {
     addProduct,
-    getAllproducts,
+    getAllProducts,
     updateQuantity
 }
